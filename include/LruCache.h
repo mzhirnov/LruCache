@@ -25,9 +25,6 @@ public:
 		if (auto it = _index.find(key); it != _index.end()) {
 			// Move to top
 			_data.splice(_data.begin(), _data, it->second);
-			// Update reference
-			it->second = _data.begin();
-			 
 			 return _data.front().second;
 		}
 		
@@ -37,9 +34,9 @@ public:
 	void Set(const TKey& key, const TValue& value) {
 		if (auto it = _index.find(key); it != _index.end()) {
 			// Assign new value
-			auto& [k, v] = *(*it).second;
+			auto& [k, v] = *it->second;
 			v = value;
-			// Move it to top
+			// Move to top
 			_data.splice(_data.begin(), _data, it->second);
 		}
 		else {
@@ -54,7 +51,7 @@ public:
 	}
 	
 	bool Exists(const TKey& key) {
-		return _index.count(key);
+		return _index.contains(key);
 	}
 
 private:
