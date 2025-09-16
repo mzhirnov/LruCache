@@ -31,11 +31,13 @@ public:
 		throw std::runtime_error("key not found");
 	}
 	
-	void Set(const TKey& key, const TValue& value) {
+	void Set(const TKey& key, const TValue& value) { Set(key, TValue{value}); }
+	
+	void Set(const TKey& key, TValue&& value) {
 		if (auto it = _index.find(key); it != _index.end()) {
 			// Assign new value
 			auto& [k, v] = *it->second;
-			v = value;
+			v = std::move(value);
 			// Move to top
 			_data.splice(_data.begin(), _data, it->second);
 		}
@@ -45,7 +47,7 @@ public:
 				_index.erase(_data.back().first);
 				_data.pop_back();
 			}
-			_data.emplace_front(key, value);
+			_data.emplace_front(key, std::move(value));
 			_index.emplace(key, _data.begin());
 		}
 	}
