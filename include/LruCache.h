@@ -2,6 +2,7 @@
 
 #include <list>
 #include <unordered_map>
+#include <functional>
 
 template <typename TKey, typename TValue>
 class LruCache {
@@ -57,12 +58,12 @@ public:
 	}
 
 private:
-	using Data = std::pair<TKey, TValue>;
-	using DataQueue = std::list<Data>;
+	using DataQueue = std::list<std::pair<TKey, TValue>>;
+	using Index = std::unordered_map<std::reference_wrapper<const TKey>, typename DataQueue::iterator, std::hash<TKey>>;
 	
 	DataQueue _data;
 	
-	std::unordered_map<TKey, typename DataQueue::iterator> _index;
+	Index _index;
 	
 	const size_t _maxSize = 1;
 };
